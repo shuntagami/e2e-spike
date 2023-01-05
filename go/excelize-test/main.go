@@ -22,10 +22,10 @@ func main() {
 		log.Println(s.Name)
 	}
 
-	f := excelize.NewFile()
+	excelFile := excelize.NewFile()
 	templateSheetName := tf.WorkBook.Sheets.Sheet[0].Name
 	rows, err := tf.GetRows(templateSheetName)
-	currentSheetName := f.WorkBook.Sheets.Sheet[0].Name
+	currentSheetName := excelFile.WorkBook.Sheets.Sheet[0].Name
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		if err = f.SetRowHeight(currentSheetName, i+1, rowHeight); err != nil {
+		if err = excelFile.SetRowHeight(currentSheetName, i+1, rowHeight); err != nil {
 			panic(err)
 		}
 
@@ -47,7 +47,7 @@ func main() {
 					panic(err)
 				}
 				colWidth, err := tf.GetColWidth(templateSheetName, colName)
-				if err = f.SetColWidth(currentSheetName, colName, colName, colWidth); err != nil {
+				if err = excelFile.SetColWidth(currentSheetName, colName, colName, colWidth); err != nil {
 					panic(err)
 				}
 			}
@@ -56,7 +56,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			if err = f.SetCellStr(f.WorkBook.Sheets.Sheet[0].Name, axis, cell); err != nil {
+			if err = excelFile.SetCellStr(excelFile.WorkBook.Sheets.Sheet[0].Name, axis, cell); err != nil {
 				panic(err)
 			}
 			cellStyle, err := tf.GetCellStyle(templateSheetName, axis)
@@ -65,12 +65,12 @@ func main() {
 			}
 			// when copy template cell style to target cell style, file are broken
 			// https://github.com/qax-os/excelize/issues/629#issuecomment-625586788
-			if err = f.SetCellStyle(currentSheetName, axis, axis, cellStyle); err != nil {
+			if err = excelFile.SetCellStyle(currentSheetName, axis, axis, cellStyle); err != nil {
 				panic(err)
 			}
 		}
 	}
-	f.WorkBook.Sheets.Sheet[0].Name = tf.WorkBook.Sheets.Sheet[0].Name
+	excelFile.WorkBook.Sheets.Sheet[0].Name = tf.WorkBook.Sheets.Sheet[0].Name
 
-	f.SaveAs("./result.xlsx")
+	excelFile.SaveAs("./result.xlsx")
 }

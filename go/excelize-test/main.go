@@ -11,6 +11,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	defer func() {
 		if err := tf.Close(); err != nil {
 			panic(err)
@@ -24,17 +25,21 @@ func main() {
 
 	excelFile := excelize.NewFile()
 	templateSheetName := tf.WorkBook.Sheets.Sheet[0].Name
+
 	rows, err := tf.GetRows(templateSheetName)
-	currentSheetName := excelFile.WorkBook.Sheets.Sheet[0].Name
 	if err != nil {
 		panic(err)
 	}
+
+	currentSheetName := excelFile.WorkBook.Sheets.Sheet[0].Name
+
 	for i, row := range rows {
 		// copy row height
 		rowHeight, err := tf.GetRowHeight(templateSheetName, i+1)
 		if err != nil {
 			panic(err)
 		}
+
 		if err = excelFile.SetRowHeight(currentSheetName, i+1, rowHeight); err != nil {
 			panic(err)
 		}
@@ -46,6 +51,7 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
+
 				colWidth, err := tf.GetColWidth(templateSheetName, colName)
 				if err = excelFile.SetColWidth(currentSheetName, colName, colName, colWidth); err != nil {
 					panic(err)
@@ -56,9 +62,11 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+
 			if err = excelFile.SetCellStr(excelFile.WorkBook.Sheets.Sheet[0].Name, axis, cell); err != nil {
 				panic(err)
 			}
+
 			cellStyle, err := tf.GetCellStyle(templateSheetName, axis)
 			if err != nil {
 				panic(err)
@@ -70,6 +78,7 @@ func main() {
 			}
 		}
 	}
+
 	excelFile.WorkBook.Sheets.Sheet[0].Name = tf.WorkBook.Sheets.Sheet[0].Name
 
 	excelFile.SaveAs("./result.xlsx")
